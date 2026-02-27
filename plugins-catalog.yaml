@@ -17,7 +17,6 @@ plugins:
     type: "kit"
     color: "#6366F1"
 
-    # Los kits no definen entidades propias, solo agrupan plugins
     entities: []
 
     views:
@@ -29,7 +28,6 @@ plugins:
 
     repositories: []
 
-    # Plugins que instala este kit
     dependencies:
       - "@coongro/consultations"
       - "@coongro/patients"
@@ -37,322 +35,330 @@ plugins:
     settings: []
 
   # ==========================================================================
-  # PLUGINS STANDALONE
-  # ==========================================================================
-  - id: "calendar"
-    name: "@coongro/calendar"
-    version: "1.0.0"
-    repo: null  # Pendiente de publicar en repo independiente
-    description: "Plugin de calendario para gestionar eventos y citas"
-    type: "standalone"
-    color: "#3B82F6"
-
-    entities:
-      - name: "event"
-        table: "module_calendar_events"
-        displayName: "Eventos"
-        fields:
-          - name: "title"
-            type: "text"
-            required: true
-          - name: "description"
-            type: "text"
-            required: false
-          - name: "start_date"
-            type: "datetime"
-            required: true
-          - name: "end_date"
-            type: "datetime"
-            required: false
-          - name: "all_day"
-            type: "boolean"
-            required: true
-          - name: "color"
-            type: "text"
-            required: false
-
-    views:
-      - id: "calendar.calendario.open"
-        title: "Calendario"
-        type: "calendar"
-        acceptsContributions: true
-        slots: ["sections", "actions"]
-
-    repositories:
-      - prefix: "calendar.events"
-        entity: "event"
-        methods: ["list", "getById", "create", "update", "delete"]
-
-    dependencies: []
-
-    settings: []
-
-  - id: "home-gestion"
-    name: "@coongro/home-gestion"
-    version: "1.0.0"
-    repo: null  # Pendiente de publicar en repo independiente
-    description: "Organización familiar: agenda, tareas del hogar, compras, pendientes, gastos y contactos útiles"
-    type: "standalone"
-    color: "#3B82F6"
-
-    entities:
-      - name: "member"
-        table: "module_home_gestion_members"
-        displayName: "Integrantes"
-        fields:
-          - name: "name"
-            type: "text"
-            required: true
-          - name: "color"
-            type: "text"
-            required: true
-
-      - name: "event"
-        table: "module_home_gestion_events"
-        displayName: "Eventos"
-        fields:
-          - name: "title"
-            type: "text"
-            required: true
-          - name: "description"
-            type: "text"
-            required: false
-          - name: "start_date"
-            type: "datetime"
-            required: true
-          - name: "end_date"
-            type: "datetime"
-            required: false
-          - name: "all_day"
-            type: "boolean"
-            required: true
-          - name: "color"
-            type: "text"
-            required: false
-
-      - name: "chore"
-        table: "module_home_gestion_chores"
-        displayName: "Tareas"
-        fields:
-          - name: "title"
-            type: "text"
-            required: true
-          - name: "assigned_to"
-            type: "uuid"
-            required: false
-            refEntity: "member"
-          - name: "frequency"
-            type: "enum"
-            required: true
-          - name: "completed"
-            type: "boolean"
-            required: true
-
-      - name: "shopping-item"
-        table: "module_home_gestion_shopping_items"
-        displayName: "Items de Compras"
-        fields:
-          - name: "name"
-            type: "text"
-            required: true
-          - name: "quantity"
-            type: "number"
-            required: false
-          - name: "purchased"
-            type: "boolean"
-            required: true
-
-      - name: "todo"
-        table: "module_home_gestion_todos"
-        displayName: "Pendientes"
-        fields:
-          - name: "title"
-            type: "text"
-            required: true
-          - name: "completed"
-            type: "boolean"
-            required: true
-          - name: "due_date"
-            type: "datetime"
-            required: false
-
-      - name: "expense-category"
-        table: "module_home_gestion_expense_categories"
-        displayName: "Categorías de Gastos"
-        fields:
-          - name: "name"
-            type: "text"
-            required: true
-          - name: "color"
-            type: "text"
-            required: false
-
-      - name: "expense"
-        table: "module_home_gestion_expenses"
-        displayName: "Gastos"
-        fields:
-          - name: "description"
-            type: "text"
-            required: true
-          - name: "amount"
-            type: "number"
-            required: true
-          - name: "category_id"
-            type: "uuid"
-            required: false
-            refEntity: "expense-category"
-          - name: "paid_by"
-            type: "uuid"
-            required: true
-            refEntity: "member"
-          - name: "date"
-            type: "datetime"
-            required: true
-
-      - name: "contact"
-        table: "module_home_gestion_contacts"
-        displayName: "Contactos"
-        fields:
-          - name: "name"
-            type: "text"
-            required: true
-          - name: "phone"
-            type: "text"
-            required: false
-          - name: "category"
-            type: "text"
-            required: false
-
-    views:
-      - id: "home-gestion.dashboard.open"
-        title: "Dashboard"
-        type: "dashboard"
-        acceptsContributions: true
-        slots: ["sections", "actions"]
-
-      - id: "home-gestion.integrantes.open"
-        title: "Integrantes"
-        type: "list"
-        entity: "member"
-        acceptsContributions: true
-        slots: ["sections", "actions"]
-
-      - id: "home-gestion.agenda.open"
-        title: "Agenda"
-        type: "calendar"
-        entity: "event"
-        acceptsContributions: true
-        slots: ["sections", "actions"]
-
-      - id: "home-gestion.tareas.open"
-        title: "Tareas"
-        type: "list"
-        entity: "chore"
-        acceptsContributions: true
-        slots: ["sections", "actions"]
-
-      - id: "home-gestion.compras.open"
-        title: "Compras"
-        type: "list"
-        entity: "shopping-item"
-        acceptsContributions: true
-        slots: ["sections", "actions"]
-
-      - id: "home-gestion.pendientes.open"
-        title: "Pendientes"
-        type: "list"
-        entity: "todo"
-        acceptsContributions: true
-        slots: ["sections", "actions"]
-
-      - id: "home-gestion.registro.open"
-        title: "Registro de Gastos"
-        type: "list"
-        entity: "expense"
-        acceptsContributions: true
-        slots: ["sections", "actions"]
-
-      - id: "home-gestion.categorias.open"
-        title: "Categorías de Gastos"
-        type: "list"
-        entity: "expense-category"
-        acceptsContributions: true
-        slots: ["sections", "actions"]
-
-      - id: "home-gestion.contactos.open"
-        title: "Contactos"
-        type: "list"
-        entity: "contact"
-        acceptsContributions: true
-        slots: ["sections", "actions"]
-
-    repositories:
-      - prefix: "home.members"
-        entity: "member"
-        methods: ["list", "getById", "create", "update", "delete"]
-      - prefix: "home.events"
-        entity: "event"
-        methods: ["list", "getById", "create", "update", "delete"]
-      - prefix: "home.chores"
-        entity: "chore"
-        methods: ["list", "getById", "create", "update", "delete"]
-      - prefix: "home.shoppingItems"
-        entity: "shopping-item"
-        methods: ["list", "getById", "create", "update", "delete"]
-      - prefix: "home.todos"
-        entity: "todo"
-        methods: ["list", "getById", "create", "update", "delete"]
-      - prefix: "home.expenseCategories"
-        entity: "expense-category"
-        methods: ["list", "getById", "create", "update", "delete"]
-      - prefix: "home.expenses"
-        entity: "expense"
-        methods: ["list", "getById", "create", "update", "delete"]
-      - prefix: "home.contacts"
-        entity: "contact"
-        methods: ["list", "getById", "create", "update", "delete"]
-
-    dependencies: []
-
-    settings: []
-
-  # ==========================================================================
-  # PLUGINS REFERENCIADOS (sin repo público aún)
+  # BLOQUES (plugins con UI completa)
   # ==========================================================================
   - id: "consultations"
     name: "@coongro/consultations"
-    version: "unknown"
-    repo: null
-    description: "Gestión de consultas médicas/veterinarias"
-    type: "standalone"
-    status: "referenced"  # Existe en el registry pero no hay repo público
-    color: "#14B8A6"
+    version: "0.1.3"
+    repo: "Coongro/consultations"
+    description: "Bloque de historia clínica: consultas veterinarias, diagnósticos y tratamientos"
+    type: "bloque"
+    color: "#8B5CF6"
 
     entities:
       - name: "consultation"
+        table: "module_consultations_consultations"
         displayName: "Consultas"
-        fields: []  # Pendiente de documentar
+        fields:
+          - { name: "pet_id", type: "text", required: true, refEntity: "patients.pet" }
+          - { name: "vet_name", type: "text", required: true }
+          - { name: "date", type: "datetime", required: true }
+          - { name: "weight_kg", type: "number", required: false }
+          - { name: "temperature", type: "number", required: false }
+          - { name: "reason", type: "text", required: true }
+          - { name: "reason_category", type: "text", required: false }
+          - { name: "anamnesis", type: "text", required: false }
+          - { name: "physical_exam", type: "text", required: false }
+          - { name: "diagnosis", type: "text", required: false }
+          - { name: "diagnosis_tags", type: "json", required: false }
+          - { name: "treatment", type: "text", required: false }
+          - { name: "follow_up_date", type: "text", required: false }
+          - { name: "follow_up_notes", type: "text", required: false }
+          - { name: "notes", type: "text", required: false }
 
-    views: []
-    repositories: []
-    dependencies: []
-    settings: []
+      - name: "consultation-medication"
+        table: "module_consultations_medications"
+        displayName: "Medicamentos de Consulta"
+
+      - name: "consultation-service"
+        table: "module_consultations_services"
+        displayName: "Servicios de Consulta"
+
+    views:
+      - id: "consultations.list.open"
+        title: "Historial de Consultas"
+        type: "list"
+        entity: "consultation"
+        acceptsContributions: true
+        slots: ["sections", "actions"]
+
+      - id: "consultations.detail.open"
+        title: "Detalle Consulta"
+        type: "detail"
+        entity: "consultation"
+        acceptsContributions: true
+        slots: ["sections", "actions"]
+
+      - id: "consultations.form.open"
+        title: "Formulario Consulta"
+        type: "form"
+        entity: "consultation"
+        acceptsContributions: true
+        slots: ["sections", "actions"]
+
+      - id: "consultations.services.open"
+        title: "Servicios y Precios"
+        type: "list"
+        entity: "consultation-service"
+        acceptsContributions: true
+        slots: ["sections", "actions"]
+
+    repositories:
+      - prefix: "consultations.records"
+        entity: "consultation"
+        methods: ["list", "getById", "create", "update", "delete"]
+      - prefix: "consultations.medications"
+        entity: "consultation-medication"
+        methods: ["list", "getById", "create", "update", "delete"]
+      - prefix: "consultations.services"
+        entity: "consultation-service"
+        methods: ["list", "getById", "create", "update", "delete"]
+
+    viewOverrides:
+      - targetViewId: "patients.detail.open"
+        title: "Ficha Paciente"
+        description: "Extiende la ficha del paciente con historial de consultas"
+
+    dependencies:
+      - "@coongro/patients"
+      - "@coongro/products"
+
+    settings:
+      - key: "consultations.reasonCategories"
+        type: "boolean"
+        label: "Categorías de motivo"
+        description: "Habilitar botones de categoría rápida (rutina, vacunación, enfermedad, etc.)"
+        default: true
+      - key: "consultations.defaultVet"
+        type: "string"
+        label: "Veterinario predeterminado"
+        default: ""
+      - key: "consultations.showPrices"
+        type: "boolean"
+        label: "Servicios y precios en consultas"
+        default: true
 
   - id: "patients"
     name: "@coongro/patients"
-    version: "unknown"
-    repo: null
-    description: "Gestión de pacientes con fichas y datos de contacto"
-    type: "standalone"
-    status: "referenced"
-    color: "#EC4899"
+    version: "0.2.0"
+    repo: "Coongro/patients"
+    description: "Bloque de gestión de pacientes veterinarios: mascotas, dueños y fichas clínicas"
+    type: "bloque"
+    color: "#10B981"
 
     entities:
-      - name: "patient"
-        displayName: "Pacientes"
-        fields: []  # Pendiente de documentar
+      - name: "pet"
+        table: "module_patients_pets"
+        displayName: "Mascotas"
+        fields:
+          - { name: "name", type: "text", required: true }
+          - { name: "species", type: "text", required: true }
+          - { name: "breed", type: "text", required: false }
+          - { name: "sex", type: "text", required: false }
+          - { name: "color_markings", type: "text", required: false }
+          - { name: "birth_date", type: "text", required: false }
+          - { name: "weight_kg", type: "number", required: false }
+          - { name: "microchip_number", type: "text", required: false }
+          - { name: "owner_id", type: "text", required: true, refEntity: "contacts.contact" }
+          - { name: "photo_url", type: "text", required: false }
+          - { name: "status", type: "text", required: true }
+          - { name: "reproductive_status", type: "text", required: false }
+          - { name: "allergies", type: "json", required: false }
+          - { name: "chronic_conditions", type: "json", required: false }
+          - { name: "notes", type: "text", required: false }
+          - { name: "is_active", type: "boolean", required: true }
+
+      - name: "vet-owner"
+        table: "module_patients_vet_owners"
+        displayName: "Dueños"
+        description: "Vista especializada sobre contacts para dueños de mascotas"
+
+    views:
+      - id: "patients.list.open"
+        title: "Pacientes"
+        type: "list"
+        entity: "pet"
+        acceptsContributions: true
+        slots: ["sections", "actions"]
+
+      - id: "patients.detail.open"
+        title: "Ficha Paciente"
+        type: "detail"
+        entity: "pet"
+        acceptsContributions: true
+        slots: ["sections", "actions"]
+
+      - id: "patients.create.open"
+        title: "Nuevo Paciente"
+        type: "form"
+        entity: "pet"
+        acceptsContributions: true
+        slots: ["sections", "actions"]
+
+      - id: "patients.owners.open"
+        title: "Dueños"
+        type: "list"
+        entity: "vet-owner"
+        acceptsContributions: true
+        slots: ["sections", "actions"]
+
+      - id: "patients.owner-detail.open"
+        title: "Ficha Dueño"
+        type: "detail"
+        entity: "vet-owner"
+        acceptsContributions: true
+        slots: ["sections", "actions"]
+
+    repositories:
+      - prefix: "patients.pets"
+        entity: "pet"
+        methods: ["list", "getById", "create", "update", "delete"]
+      - prefix: "patients.owners"
+        entity: "vet-owner"
+        methods: ["list", "getById", "create", "update", "delete"]
+
+    dependencies:
+      - "@coongro/contacts"
+
+    settings:
+      - key: "patients.species.dog"
+        type: "boolean"
+        label: "Perro"
+        default: true
+      - key: "patients.species.cat"
+        type: "boolean"
+        label: "Gato"
+        default: true
+      - key: "patients.species.bird"
+        type: "boolean"
+        label: "Ave"
+        default: false
+      - key: "patients.species.reptile"
+        type: "boolean"
+        label: "Reptil"
+        default: false
+      - key: "patients.species.rodent"
+        type: "boolean"
+        label: "Roedor"
+        default: false
+      - key: "patients.species.other"
+        type: "boolean"
+        label: "Otro"
+        default: true
+      - key: "patients.defaults.species"
+        type: "enum"
+        label: "Especie por defecto"
+        default: "dog"
+        options: ["dog", "cat", "bird", "reptile", "rodent", "other"]
+      - key: "patients.behavior.openDetailOnCreate"
+        type: "boolean"
+        label: "Abrir ficha al crear"
+        default: true
+
+  # ==========================================================================
+  # MÓDULOS (plugins reutilizables sin UI propia)
+  # ==========================================================================
+  - id: "contacts"
+    name: "@coongro/contacts"
+    version: "0.3.0"
+    repo: "Coongro/contacts"
+    description: "Módulo genérico y reutilizable de gestión de contactos para Coongro"
+    type: "modulo"
+    color: "#6B7280"
+
+    entities:
+      - name: "contact"
+        table: "module_contacts_contacts"
+        displayName: "Contactos"
+        fields:
+          - { name: "type", type: "text", required: true }
+          - { name: "name", type: "text", required: true }
+          - { name: "phone", type: "text", required: false }
+          - { name: "email", type: "text", required: false }
+          - { name: "document_type", type: "text", required: false }
+          - { name: "document_number", type: "text", required: false }
+          - { name: "address", type: "text", required: false }
+          - { name: "notes", type: "text", required: false }
+          - { name: "avatar_url", type: "text", required: false }
+          - { name: "tags", type: "json", required: false }
+          - { name: "is_active", type: "boolean", required: true }
 
     views: []
-    repositories: []
+
+    repositories:
+      - prefix: "contacts"
+        entity: "contact"
+        methods: ["list", "getById", "create", "update", "delete"]
+
     dependencies: []
+
     settings: []
+
+    exports:
+      hooks: ["useContacts", "useContact"]
+      components: ["ContactPicker", "ContactCard"]
+      types: ["Contact", "ContactType"]
+
+  - id: "products"
+    name: "@coongro/products"
+    version: "0.1.0"
+    repo: "Coongro/products"
+    description: "Módulo genérico de productos: catálogo, categorías, variantes e inventario. Reutilizable por cualquier kit."
+    type: "modulo"
+    color: "#F59E0B"
+
+    entities:
+      - name: "category"
+        table: "module_products_categories"
+        displayName: "Categorías"
+
+      - name: "product"
+        table: "module_products_products"
+        displayName: "Productos"
+        fields:
+          - { name: "name", type: "text", required: true }
+          - { name: "description", type: "text", required: false }
+          - { name: "category_id", type: "uuid", required: false, refEntity: "products.category" }
+          - { name: "sku", type: "text", required: false }
+          - { name: "barcode", type: "text", required: false }
+          - { name: "unit", type: "text", required: false }
+          - { name: "purchase_price", type: "number", required: false }
+          - { name: "sale_price", type: "number", required: false }
+          - { name: "tax_rate", type: "number", required: false }
+          - { name: "stock_current", type: "number", required: true, default: 0 }
+          - { name: "stock_minimum", type: "number", required: true, default: 0 }
+          - { name: "image_url", type: "text", required: false }
+          - { name: "is_active", type: "boolean", required: true, default: true }
+
+      - name: "variant"
+        table: "module_products_variants"
+        displayName: "Variantes"
+
+      - name: "stock-movement"
+        table: "module_products_stock_movements"
+        displayName: "Movimientos de Stock"
+
+    views: []
+
+    repositories:
+      - prefix: "products.categories"
+        entity: "category"
+        methods: ["list", "getById", "create", "update", "delete"]
+      - prefix: "products.items"
+        entity: "product"
+        methods: ["list", "getById", "create", "update", "delete"]
+      - prefix: "products.variants"
+        entity: "variant"
+        methods: ["list", "getById", "create", "update", "delete"]
+      - prefix: "products.stock"
+        entity: "stock-movement"
+        methods: ["list", "getById", "create", "update", "delete"]
+
+    dependencies: []
+
+    settings: []
+
+    exports:
+      hooks: ["useProducts", "useProduct", "useCategories"]
+      components: ["ProductPicker", "ProductCard", "StockIndicator"]
+      types: ["Product", "Category", "Variant", "StockMovement"]

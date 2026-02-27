@@ -6,12 +6,16 @@ repos:
   - repo: "Coongro/kit-veterinary"
     type: "kit"
 
-  # Plugins standalone (agregar cuando se publiquen en repos independientes)
-  # - repo: "Coongro/calendar"
-  #   type: "standalone"
-  # - repo: "Coongro/home-gestion"
-  #   type: "standalone"
-  # - repo: "Coongro/consultations"
-  #   type: "standalone"
-  # - repo: "Coongro/patients"
-  #   type: "standalone"
+  # Bloques (plugins con UI completa)
+  - repo: "Coongro/consultations"
+    type: "bloque"
+
+  - repo: "Coongro/patients"
+    type: "bloque"
+
+  # Módulos (plugins reutilizables sin UI propia)
+  - repo: "Coongro/contacts"
+    type: "modulo"
+
+  - repo: "Coongro/products"
+    type: "modulo"
