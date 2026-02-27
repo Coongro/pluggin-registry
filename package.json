@@ -1,0 +1,13 @@
+{
+  "name": "coongro-plugin-registry",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Catálogo centralizado de plugins Coongro",
+  "scripts": {
+    "update": "node scripts/update-single.js",
+    "regenerate": "node scripts/regenerate-all.js"
+  },
+  "dependencies": {
+    "yaml": "^2.3.4"
+  }
+}

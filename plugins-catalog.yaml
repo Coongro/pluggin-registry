@@ -1,0 +1,358 @@
+# Coongro Plugin Registry
+# Catálogo centralizado de plugins disponibles
+# Última actualización: 2026-02-27
+
+version: "1.0.0"
+lastUpdated: "2026-02-27T00:00:00Z"
+
+plugins:
+  # ==========================================================================
+  # KITS (meta-plugins que agrupan otros plugins)
+  # ==========================================================================
+  - id: "kit-veterinary"
+    name: "@coongro/kit-veterinary"
+    version: "0.1.2"
+    repo: "Coongro/kit-veterinary"
+    description: "Kit base para gestión veterinaria. Incluye pacientes, consultas, productos y contactos."
+    type: "kit"
+    color: "#6366F1"
+
+    # Los kits no definen entidades propias, solo agrupan plugins
+    entities: []
+
+    views:
+      - id: "kit-veterinary.dashboard.open"
+        title: "Dashboard"
+        type: "dashboard"
+        acceptsContributions: true
+        slots: ["sections", "actions"]
+
+    repositories: []
+
+    # Plugins que instala este kit
+    dependencies:
+      - "@coongro/consultations"
+      - "@coongro/patients"
+
+    settings: []
+
+  # ==========================================================================
+  # PLUGINS STANDALONE
+  # ==========================================================================
+  - id: "calendar"
+    name: "@coongro/calendar"
+    version: "1.0.0"
+    repo: null  # Pendiente de publicar en repo independiente
+    description: "Plugin de calendario para gestionar eventos y citas"
+    type: "standalone"
+    color: "#3B82F6"
+
+    entities:
+      - name: "event"
+        table: "module_calendar_events"
+        displayName: "Eventos"
+        fields:
+          - name: "title"
+            type: "text"
+            required: true
+          - name: "description"
+            type: "text"
+            required: false
+          - name: "start_date"
+            type: "datetime"
+            required: true
+          - name: "end_date"
+            type: "datetime"
+            required: false
+          - name: "all_day"
+            type: "boolean"
+            required: true
+          - name: "color"
+            type: "text"
+            required: false
+
+    views:
+      - id: "calendar.calendario.open"
+        title: "Calendario"
+        type: "calendar"
+        acceptsContributions: true
+        slots: ["sections", "actions"]
+
+    repositories:
+      - prefix: "calendar.events"
+        entity: "event"
+        methods: ["list", "getById", "create", "update", "delete"]
+
+    dependencies: []
+
+    settings: []
+
+  - id: "home-gestion"
+    name: "@coongro/home-gestion"
+    version: "1.0.0"
+    repo: null  # Pendiente de publicar en repo independiente
+    description: "Organización familiar: agenda, tareas del hogar, compras, pendientes, gastos y contactos útiles"
+    type: "standalone"
+    color: "#3B82F6"
+
+    entities:
+      - name: "member"
+        table: "module_home_gestion_members"
+        displayName: "Integrantes"
+        fields:
+          - name: "name"
+            type: "text"
+            required: true
+          - name: "color"
+            type: "text"
+            required: true
+
+      - name: "event"
+        table: "module_home_gestion_events"
+        displayName: "Eventos"
+        fields:
+          - name: "title"
+            type: "text"
+            required: true
+          - name: "description"
+            type: "text"
+            required: false
+          - name: "start_date"
+            type: "datetime"
+            required: true
+          - name: "end_date"
+            type: "datetime"
+            required: false
+          - name: "all_day"
+            type: "boolean"
+            required: true
+          - name: "color"
+            type: "text"
+            required: false
+
+      - name: "chore"
+        table: "module_home_gestion_chores"
+        displayName: "Tareas"
+        fields:
+          - name: "title"
+            type: "text"
+            required: true
+          - name: "assigned_to"
+            type: "uuid"
+            required: false
+            refEntity: "member"
+          - name: "frequency"
+            type: "enum"
+            required: true
+          - name: "completed"
+            type: "boolean"
+            required: true
+
+      - name: "shopping-item"
+        table: "module_home_gestion_shopping_items"
+        displayName: "Items de Compras"
+        fields:
+          - name: "name"
+            type: "text"
+            required: true
+          - name: "quantity"
+            type: "number"
+            required: false
+          - name: "purchased"
+            type: "boolean"
+            required: true
+
+      - name: "todo"
+        table: "module_home_gestion_todos"
+        displayName: "Pendientes"
+        fields:
+          - name: "title"
+            type: "text"
+            required: true
+          - name: "completed"
+            type: "boolean"
+            required: true
+          - name: "due_date"
+            type: "datetime"
+            required: false
+
+      - name: "expense-category"
+        table: "module_home_gestion_expense_categories"
+        displayName: "Categorías de Gastos"
+        fields:
+          - name: "name"
+            type: "text"
+            required: true
+          - name: "color"
+            type: "text"
+            required: false
+
+      - name: "expense"
+        table: "module_home_gestion_expenses"
+        displayName: "Gastos"
+        fields:
+          - name: "description"
+            type: "text"
+            required: true
+          - name: "amount"
+            type: "number"
+            required: true
+          - name: "category_id"
+            type: "uuid"
+            required: false
+            refEntity: "expense-category"
+          - name: "paid_by"
+            type: "uuid"
+            required: true
+            refEntity: "member"
+          - name: "date"
+            type: "datetime"
+            required: true
+
+      - name: "contact"
+        table: "module_home_gestion_contacts"
+        displayName: "Contactos"
+        fields:
+          - name: "name"
+            type: "text"
+            required: true
+          - name: "phone"
+            type: "text"
+            required: false
+          - name: "category"
+            type: "text"
+            required: false
+
+    views:
+      - id: "home-gestion.dashboard.open"
+        title: "Dashboard"
+        type: "dashboard"
+        acceptsContributions: true
+        slots: ["sections", "actions"]
+
+      - id: "home-gestion.integrantes.open"
+        title: "Integrantes"
+        type: "list"
+        entity: "member"
+        acceptsContributions: true
+        slots: ["sections", "actions"]
+
+      - id: "home-gestion.agenda.open"
+        title: "Agenda"
+        type: "calendar"
+        entity: "event"
+        acceptsContributions: true
+        slots: ["sections", "actions"]
+
+      - id: "home-gestion.tareas.open"
+        title: "Tareas"
+        type: "list"
+        entity: "chore"
+        acceptsContributions: true
+        slots: ["sections", "actions"]
+
+      - id: "home-gestion.compras.open"
+        title: "Compras"
+        type: "list"
+        entity: "shopping-item"
+        acceptsContributions: true
+        slots: ["sections", "actions"]
+
+      - id: "home-gestion.pendientes.open"
+        title: "Pendientes"
+        type: "list"
+        entity: "todo"
+        acceptsContributions: true
+        slots: ["sections", "actions"]
+
+      - id: "home-gestion.registro.open"
+        title: "Registro de Gastos"
+        type: "list"
+        entity: "expense"
+        acceptsContributions: true
+        slots: ["sections", "actions"]
+
+      - id: "home-gestion.categorias.open"
+        title: "Categorías de Gastos"
+        type: "list"
+        entity: "expense-category"
+        acceptsContributions: true
+        slots: ["sections", "actions"]
+
+      - id: "home-gestion.contactos.open"
+        title: "Contactos"
+        type: "list"
+        entity: "contact"
+        acceptsContributions: true
+        slots: ["sections", "actions"]
+
+    repositories:
+      - prefix: "home.members"
+        entity: "member"
+        methods: ["list", "getById", "create", "update", "delete"]
+      - prefix: "home.events"
+        entity: "event"
+        methods: ["list", "getById", "create", "update", "delete"]
+      - prefix: "home.chores"
+        entity: "chore"
+        methods: ["list", "getById", "create", "update", "delete"]
+      - prefix: "home.shoppingItems"
+        entity: "shopping-item"
+        methods: ["list", "getById", "create", "update", "delete"]
+      - prefix: "home.todos"
+        entity: "todo"
+        methods: ["list", "getById", "create", "update", "delete"]
+      - prefix: "home.expenseCategories"
+        entity: "expense-category"
+        methods: ["list", "getById", "create", "update", "delete"]
+      - prefix: "home.expenses"
+        entity: "expense"
+        methods: ["list", "getById", "create", "update", "delete"]
+      - prefix: "home.contacts"
+        entity: "contact"
+        methods: ["list", "getById", "create", "update", "delete"]
+
+    dependencies: []
+
+    settings: []
+
+  # ==========================================================================
+  # PLUGINS REFERENCIADOS (sin repo público aún)
+  # ==========================================================================
+  - id: "consultations"
+    name: "@coongro/consultations"
+    version: "unknown"
+    repo: null
+    description: "Gestión de consultas médicas/veterinarias"
+    type: "standalone"
+    status: "referenced"  # Existe en el registry pero no hay repo público
+    color: "#14B8A6"
+
+    entities:
+      - name: "consultation"
+        displayName: "Consultas"
+        fields: []  # Pendiente de documentar
+
+    views: []
+    repositories: []
+    dependencies: []
+    settings: []
+
+  - id: "patients"
+    name: "@coongro/patients"
+    version: "unknown"
+    repo: null
+    description: "Gestión de pacientes con fichas y datos de contacto"
+    type: "standalone"
+    status: "referenced"
+    color: "#EC4899"
+
+    entities:
+      - name: "patient"
+        displayName: "Pacientes"
+        fields: []  # Pendiente de documentar
+
+    views: []
+    repositories: []
+    dependencies: []
+    settings: []

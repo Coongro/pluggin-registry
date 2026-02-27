@@ -1,0 +1,17 @@
+# Lista de repositorios de plugins a escanear
+# El script regenerate-all.js lee este archivo para actualizar el catálogo completo
+
+repos:
+  # Kits
+  - repo: "Coongro/kit-veterinary"
+    type: "kit"
+
+  # Plugins standalone (agregar cuando se publiquen en repos independientes)
+  # - repo: "Coongro/calendar"
+  #   type: "standalone"
+  # - repo: "Coongro/home-gestion"
+  #   type: "standalone"
+  # - repo: "Coongro/consultations"
+  #   type: "standalone"
+  # - repo: "Coongro/patients"
+  #   type: "standalone"

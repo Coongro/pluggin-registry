@@ -1,0 +1,59 @@
+# =============================================================================
+# EJEMPLO: Workflow para repos de plugins
+# =============================================================================
+# Copiar este archivo a: .github/workflows/on-publish.yml en cada repo de plugin
+#
+# Requisitos:
+# 1. Crear un Personal Access Token (PAT) con permisos de escritura en pluggin-registry
+# 2. Agregar el PAT como secreto REGISTRY_PAT en el repo del plugin
+# =============================================================================
+
+name: Publish & Update Registry
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  publish-and-notify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.coongro.com/'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Quality check
+        run: npm run quality
+
+      - name: Build
+        run: npm run build
+
+      - name: Publish to registry
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Trigger Registry Update
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.REGISTRY_PAT }}
+          repository: Coongro/pluggin-registry
+          event-type: plugin-updated
+          client-payload: '{"plugin_repo": "${{ github.repository }}"}'
+
+      - name: Summary
+        run: |
+          echo "### Plugin Published! :rocket:" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Version:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Registry updated:** Yes" >> $GITHUB_STEP_SUMMARY
