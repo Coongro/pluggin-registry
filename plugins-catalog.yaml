@@ -1,9 +1,9 @@
 # Coongro Plugin Registry
 # Catálogo centralizado de plugins disponibles
-# Última actualización: 2026-02-27
+# Última actualización: 2026-03-11
 
 version: "1.0.0"
-lastUpdated: "2026-02-27T00:00:00Z"
+lastUpdated: "2026-03-11T00:00:00Z"
 
 plugins:
   # ==========================================================================
@@ -362,3 +362,85 @@ plugins:
       hooks: ["useProducts", "useProduct", "useCategories"]
       components: ["ProductPicker", "ProductCard", "StockIndicator"]
       types: ["Product", "Category", "Variant", "StockMovement"]
+
+  # ==========================================================================
+  # MÓDULOS ATÓMICOS (infraestructura reutilizable)
+  # ==========================================================================
+  - id: "calendar-core"
+    name: "@coongro/calendar-core"
+    version: "1.0.0"
+    repo: "Coongro/calendar-core"
+    description: "Módulo atómico de calendario. Provee infraestructura reutilizable: CalendarView, hooks de gestión de eventos, soporte para recurrencia (RRule) y sistema de EventSource para agregar múltiples fuentes de eventos."
+    type: "modulo-atomico"
+    color: "#3B82F6"
+
+    entities: []
+
+    views: []
+
+    repositories: []
+
+    dependencies: []
+
+    settings:
+      - key: "calendar-core.defaultView"
+        type: "enum"
+        label: "Vista por defecto"
+        description: "Vista inicial al abrir el calendario"
+        default: "month"
+        options: ["month", "week", "day", "agenda"]
+      - key: "calendar-core.startDayOfWeek"
+        type: "enum"
+        label: "Primer día de la semana"
+        description: "Día en que comienza la semana"
+        default: "monday"
+        options: ["sunday", "monday"]
+      - key: "calendar-core.showWeekends"
+        type: "boolean"
+        label: "Mostrar fines de semana"
+        description: "Incluir sábado y domingo en las vistas"
+        default: true
+      - key: "calendar-core.defaultEventDuration"
+        type: "number"
+        label: "Duración por defecto (minutos)"
+        description: "Duración inicial de nuevos eventos"
+        default: 60
+
+    exports:
+      hooks: ["useCalendar", "useRecurrence"]
+      components: ["CalendarView", "SourceFilterBar", "MiniCalendar"]
+      services: ["CalendarEventService"]
+      utils: ["expandRecurrence", "describeRecurrence", "dateRangeForView"]
+      types:
+        - "CalendarEvent"
+        - "CalendarViewType"
+        - "CalendarOptions"
+        - "CalendarProps"
+        - "DateRange"
+        - "EventSourceDefinition"
+        - "RecurrenceRule"
+        - "RecurrenceEditMode"
+        - "UseCalendarReturn"
+        - "UseRecurrenceReturn"
+
+    usageNotes: |
+      Este módulo NO tiene UI propia (sin menús ni vistas).
+      Otros plugins lo usan como dependencia para construir sus propios calendarios.
+
+      Ejemplo de uso:
+      ```tsx
+      import { useCalendar, CalendarView } from '@coongro/calendar-core';
+
+      const sources: EventSourceDefinition[] = [{
+        id: 'appointments',
+        label: 'Citas',
+        color: '#10B981',
+        fetchEvents: async (range) => { /* fetch from repo */ },
+        canCreate: true,
+        canEdit: true,
+        canDelete: true
+      }];
+
+      const { calendarProps } = useCalendar({ sources, options });
+      return h(CalendarView, calendarProps);
+      ```
